@@ -4,59 +4,62 @@ namespace App\Http\Controllers;
 
 use App\Models\Task;
 use Illuminate\Http\Request;
+use App\Traits\ApiResponse;
+use App\Services\TaskService;
 
 class TaskController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    use ApiResponse;
+
+    public function __construct(
+        private TaskService $taskService
+    ) {}
+
     public function index()
     {
-        //
-        return auth()->user()->tasks;
+        $tasks = $this->taskService->getAllForUser(auth()->id());
+
+        return $this->success(
+            TaskResource::collection($tasks);
+        );
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-        $task = auth()->user()->tasks()->create([
-            'title' => $request->title,
-            'description' => $request->description,
-            'completed' => false,
-        ]);
-
-        return response()->json($task, 201);
-    }   
-
-    /**
-     * Display the specified resource.
-     */
     public function show(Task $task)
     {
-        //
-        return $task;
+        $this->authorizeTask($task);
+
+        return $this->success($task);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Task $task)
+    public function store(StoreTaskRequest $request)
     {
-        //
-        $task->update($request->all());
-        return $task;
+        return $this->success(
+            $this->taskService->create($request->validated(), auth()->id())
+        );
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    public function update(StoreTaskRequest $request, Task $task)
+    {
+        $this->authorizeTask($task);
+
+        return $this->success(
+            $this->taskService->update($task, $request->validated())
+        );
+    }
+
     public function destroy(Task $task)
     {
-        //
-        $task->delete();
-        return response()->noContent();
+        $this->authorizeTask($task);
+
+        $this->taskService->delete($task);
+
+        return $this->success(null, 'Task deleted successfully');
+    }
+
+    private function authorizeTask(Task $task): void
+    {
+        if ($task->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized');
+        }
     }
 }
