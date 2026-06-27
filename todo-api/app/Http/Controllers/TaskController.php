@@ -13,14 +13,7 @@ class TaskController extends Controller
     public function index()
     {
         //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return auth()->user()->tasks;
     }
 
     /**
@@ -29,7 +22,14 @@ class TaskController extends Controller
     public function store(Request $request)
     {
         //
-    }
+        $task = auth()->user()->tasks()->create([
+            'title' => $request->title,
+            'description' => $request->description,
+            'completed' => false,
+        ]);
+
+        return response()->json($task, 201);
+    }   
 
     /**
      * Display the specified resource.
@@ -37,14 +37,7 @@ class TaskController extends Controller
     public function show(Task $task)
     {
         //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Task $task)
-    {
-        //
+        return $task;
     }
 
     /**
@@ -53,6 +46,8 @@ class TaskController extends Controller
     public function update(Request $request, Task $task)
     {
         //
+        $task->update($request->all());
+        return $task;
     }
 
     /**
@@ -61,5 +56,7 @@ class TaskController extends Controller
     public function destroy(Task $task)
     {
         //
+        $task->delete();
+        return response()->noContent();
     }
 }
