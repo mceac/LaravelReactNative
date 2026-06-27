@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
-use Illuminate\Http\Request;
-use App\Traits\ApiResponse;
+use App\Http\Requests\StoreTaskRequest;
+use App\Http\Resources\TaskResource;
 use App\Services\TaskService;
+use App\Traits\ApiResponse;
 
 class TaskController extends Controller
 {
@@ -20,46 +21,58 @@ class TaskController extends Controller
         $tasks = $this->taskService->getAllForUser(auth()->id());
 
         return $this->success(
-            TaskResource::collection($tasks);
+            TaskResource::collection($tasks),
+            'Tasks retrieved successfully'
         );
     }
 
     public function show(Task $task)
     {
-        $this->authorizeTask($task);
+        $this->authorize('view', $task);
 
-        return $this->success($task);
+        return $this->success(
+            new TaskResource($task),
+            'Task retrieved successfully'
+        );
     }
 
     public function store(StoreTaskRequest $request)
     {
+        $task = $this->taskService->create(
+            $request->validated(),
+            auth()->id()
+        );
+
         return $this->success(
-            $this->taskService->create($request->validated(), auth()->id())
+            new TaskResource($task),
+            'Task created successfully'
         );
     }
 
     public function update(StoreTaskRequest $request, Task $task)
     {
-        $this->authorizeTask($task);
+        $this->authorize('update', $task);
+
+        $updatedTask = $this->taskService->update(
+            $task,
+            $request->validated()
+        );
 
         return $this->success(
-            $this->taskService->update($task, $request->validated())
+            new TaskResource($updatedTask),
+            'Task updated successfully'
         );
     }
 
     public function destroy(Task $task)
     {
-        $this->authorizeTask($task);
+        $this->authorize('delete', $task);
 
         $this->taskService->delete($task);
 
-        return $this->success(null, 'Task deleted successfully');
-    }
-
-    private function authorizeTask(Task $task): void
-    {
-        if ($task->user_id !== auth()->id()) {
-            abort(403, 'Unauthorized');
-        }
+        return $this->success(
+            null,
+            'Task deleted successfully'
+        );
     }
 }
