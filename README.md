@@ -1,28 +1,27 @@
 📱 Full Stack Task Manager (Laravel + React Native)
 
-Aplicación full stack de gestión de tareas construida con arquitectura desacoplada, backend REST en Laravel y frontend móvil en React Native (Expo). El proyecto implementa autenticación con Sanctum, manejo de estado server-side con React Query y una separación clara por capas en el cliente móvil.
+A full-stack task management application built with a decoupled architecture, featuring a RESTful Laravel backend and a React Native (Expo) mobile frontend. The project implements token-based authentication using Laravel Sanctum, server-state management with TanStack Query, and a clear layered structure on the client side.
 
-🚀 Stack técnico
-
+🚀 Tech Stack
 Backend
 Laravel 11+
-Laravel Sanctum (auth token-based)
+Laravel Sanctum (token-based authentication)
 MySQL
-REST API
+RESTful API architecture
 Mobile App
 React Native (Expo)
 TypeScript
 Expo Router
-React Query (TanStack Query)
+TanStack Query (React Query)
 Axios
 
-🧠 Arquitectura general
+🧠 High-Level Architecture
 
-El sistema está diseñado bajo un enfoque layered architecture ligera en frontend y API REST en backend, separando responsabilidades claramente.
+The system follows a lightweight layered architecture on the frontend and a REST API-driven backend, with a strong separation of concerns across all layers.
 
 📦 Backend (Laravel API)
 
-Arquitectura simple basada en controllers REST:
+The backend follows a simple REST-oriented controller-based structure:
 
 ```text
 app/
@@ -31,129 +30,136 @@ app/
  │         ├── AuthController
  │         └── TaskController
  ├── Models/
- └── Services (implícito vía controllers en esta versión)
- ```
+ └── Services (implicitly handled within controllers in this version)
+```
 
-Características
-API RESTful para autenticación y CRUD de tareas
-Autenticación basada en tokens con Laravel Sanctum
-Validación en controllers
-Hash de passwords con bcrypt
+Key Features
+RESTful API for authentication and task CRUD operations
+Token-based authentication using Laravel Sanctum
+Request validation handled at controller level
+Password hashing using bcrypt
 
 📱 Frontend (React Native)
 
-Arquitectura por capas orientada a separación de responsabilidades:
+The mobile app is structured using a layered architecture focused on separation of concerns and scalability:
 
 ```text
 src/
- ├── api/           # Cliente Axios
- ├── services/      # Acceso a API (data layer)
- ├── hooks/         # React Query hooks (state server-side)
- ├── components/    # UI reutilizable
+ ├── api/           # Axios HTTP client
+ ├── services/      # API abstraction layer (data access)
+ ├── hooks/         # React Query hooks (server-state management)
+ ├── components/    # Reusable UI components
  │    ├── TaskCard
  │    ├── TaskInput
  │    └── EmptyState
- ├── types/         # Tipos TypeScript
+ ├── types/         # TypeScript definitions
  └── screens/
       └── Tasks.tsx
 ```
 
-⚙️ Decisiones de arquitectura
+⚙️ Architectural Decisions
 
-1. React Query como fuente de estado server-side
+1. React Query as Server-State Layer
 
-Se utiliza TanStack React Query para:
+TanStack Query is used as the primary server-state management solution for:
 
-Fetch de tareas
-Mutaciones (create / delete)
-Cache invalidation automática
-Eliminación de estado global innecesario
+Fetching tasks
+Handling mutations (create / delete)
+Automatic cache invalidation
+Eliminating the need for global state management (e.g., Redux)
 
-👉 Esto evita uso de Redux o estado manual para datos del backend.
+👉 This approach avoids unnecessary global client state for backend-driven data.
 
-2. Separación en capas
+2. Layered Frontend Architecture
 
-Se separa claramente:
+The frontend is separated into distinct layers:
 
-UI Layer → componentes visuales (TaskCard, EmptyState)
-Domain Layer → hooks (useTasks, useCreateTask)
-Data Layer → servicios API (taskService, axios client)
+UI Layer → Presentational components (TaskCard, EmptyState)
+Domain Layer → Custom hooks (useTasks, useCreateTask)
+Data Layer → API services (taskService, Axios client)
 
-Esto permite:
+This structure improves:
 
-Mayor escalabilidad
-Testabilidad
-Reutilización de lógica
-Menor acoplamiento
+Scalability
+Testability
+Code reuse
+Separation of concerns
 
-3. Axios centralizado
+3. Centralized Axios Client
 
-Se utiliza un cliente Axios único con:
-baseURL configurada
-interceptor para inyección automática de token
+A single Axios instance is used with:
 
-4. Autenticación
-Login devuelve token Sanctum
-Token persistido en AsyncStorage
-Interceptor agrega token automáticamente en requests
+Configured base URL
+Request interceptor for automatic token injection
 
-🔐 Auth flow
-Usuario inicia sesión
-Backend retorna token Sanctum
-Token se guarda en AsyncStorage
-Axios lo adjunta automáticamente en requests
-API protegida mediante middleware auth:sanctum
+4. Authentication Strategy
+Login returns a Laravel Sanctum token
+Token is persisted using AsyncStorage
+Axios interceptor automatically attaches the token to requests
 
-📋 Funcionalidades
-Autenticación
-Login de usuario
-Persistencia de sesión (token)
+🔐 Authentication Flow
+
+User logs in
+Backend returns Sanctum token
+Token is stored in AsyncStorage
+Axios attaches token on every request
+Protected routes enforced via auth:sanctum middleware
+
+📋 Features
+
+Authentication
+User login
+Session persistence via token storage
 Tasks
-Listar tareas
-Crear tarea
-Eliminar tarea
-Refresh automático con React Query
-Empty state UI
+Fetch task list
+Create task
+Delete task
+Automatic refetching via React Query
+Empty state handling
 
-🧩 UI / UX highlights
-Componentes reutilizables (TaskCard, EmptyState)
-Loading states globales
-Pull-to-refresh en lista
-Diseño limpio con React Native core components
+🧩 UI / UX Highlights
+
+Reusable components (TaskCard, EmptyState)
+Global loading states
+Pull-to-refresh support
+Clean UI built with React Native core components
 
 📡 API Endpoints
-Auth
+
+Authentication
 POST /api/login
 POST /api/register
 POST /api/logout
-Tasks (protegido)
-GET    /api/tasks
-POST   /api/tasks
+Tasks (Protected)
+GET /api/tasks
+POST /api/tasks
 DELETE /api/tasks/{id}
 
-🧪 Estado del proyecto
+🧪 Project Status
 ```text
-✔ Backend funcional (Laravel API + Sanctum)
-✔ Mobile app funcional (Expo React Native)
-✔ Auth completo con token
-✔ CRUD de tareas
-✔ Arquitectura frontend desacoplada
-✔ Integración React Query
+✔ Functional backend (Laravel API + Sanctum)
+✔ Functional mobile app (Expo React Native)
+✔ Complete authentication flow
+✔ Full CRUD for tasks
+✔ Decoupled frontend architecture
+✔ React Query integration
 ```
 
-🧭 Posibles mejoras futuras
-Optimistic updates en React Query
-Refresh token / expiración de sesión
+🧭 Future Improvements
+
+Optimistic updates with React Query
+Token refresh / session expiration handling
 Testing (Jest + React Native Testing Library)
-Dockerización del backend
+Backend Dockerization
 CI/CD pipeline
-UI kit / design system completo
-Roles de usuario
+UI kit / design system
+Role-based access control (RBAC)
 
-📌 Autor
+📌 Author
 
-Proyecto desarrollado como práctica full stack para consolidación de:
-arquitectura frontend moderna
-integración móvil con API REST
-patrones de estado server-side
-backend Laravel con autenticación
+This project was developed as a full-stack practice project to strengthen:
+
+Modern frontend architecture patterns
+Mobile integration with REST APIs
+Server-state management strategies
+Laravel backend development with authentication
