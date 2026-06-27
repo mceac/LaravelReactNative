@@ -25,8 +25,16 @@ export default function Login() {
       Alert.alert("Login exitoso");
 
       router.replace("/"); // redirige a home
+    // } catch (err: any) {
+    //   console.log(err.response?.data || err.message);
+    //   Alert.alert("Error en login");
+    // }
+
     } catch (err: any) {
-      console.log(err.response?.data || err.message);
+      console.log("STATUS:", err.response?.status);
+      console.log("DATA:", err.response?.data);
+      console.log("MESSAGE:", err.message);
+
       Alert.alert("Error en login");
     }
   };
@@ -50,7 +58,13 @@ export default function Login() {
         style={{ borderWidth: 1, padding: 10 }}
       />
 
-      <Button title="Entrar" onPress={handleLogin} />
+      <Button
+        title="Entrar"
+        onPress={() => {
+          console.log("BOTON LOGIN OK");
+          handleLogin();
+        }}
+      />
     </View>
   );
 }
