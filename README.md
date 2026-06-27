@@ -24,6 +24,7 @@ El sistema está diseñado bajo un enfoque layered architecture ligera en fronte
 
 Arquitectura simple basada en controllers REST:
 
+```text
 app/
  ├── Http/
  │    ├── Controllers/
@@ -31,6 +32,7 @@ app/
  │         └── TaskController
  ├── Models/
  └── Services (implícito vía controllers en esta versión)
+ ```
 
 Características
 API RESTful para autenticación y CRUD de tareas
@@ -42,6 +44,7 @@ Hash de passwords con bcrypt
 
 Arquitectura por capas orientada a separación de responsabilidades:
 
+```text
 src/
  ├── api/           # Cliente Axios
  ├── services/      # Acceso a API (data layer)
@@ -53,6 +56,7 @@ src/
  ├── types/         # Tipos TypeScript
  └── screens/
       └── Tasks.tsx
+```
 
 ⚙️ Decisiones de arquitectura
 
@@ -128,12 +132,14 @@ POST   /api/tasks
 DELETE /api/tasks/{id}
 
 🧪 Estado del proyecto
+```text
 ✔ Backend funcional (Laravel API + Sanctum)
 ✔ Mobile app funcional (Expo React Native)
 ✔ Auth completo con token
 ✔ CRUD de tareas
 ✔ Arquitectura frontend desacoplada
 ✔ Integración React Query
+```
 
 🧭 Posibles mejoras futuras
 Optimistic updates en React Query
