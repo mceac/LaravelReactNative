@@ -12,7 +12,7 @@ class TaskTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function authenticated_user_can_create_task(): void
+    public function test_authenticated_user_can_create_task(): void
     {
         $user = User::factory()->create();
 
@@ -41,7 +41,7 @@ class TaskTest extends TestCase
     }
 
     /** @test */
-    public function authenticated_user_can_list_their_tasks(): void
+    public function test_authenticated_user_can_list_their_tasks(): void
     {
         $user = User::factory()->create();
 
@@ -63,7 +63,7 @@ class TaskTest extends TestCase
     }
 
     /** @test */
-    public function user_can_view_only_their_task(): void
+    public function test_user_can_view_only_their_task(): void
     {
         $user = User::factory()->create();
 
@@ -87,7 +87,7 @@ class TaskTest extends TestCase
     }
 
     /** @test */
-    public function user_cannot_view_other_users_task(): void
+    public function test_user_cannot_view_other_users_task(): void
     {
         $user = User::factory()->create();
         $otherTask = Task::factory()->create(); // otro usuario
@@ -99,7 +99,7 @@ class TaskTest extends TestCase
     }
 
     /** @test */
-    public function user_can_update_their_task(): void
+    public function test_user_can_update_their_task(): void
     {
         $user = User::factory()->create();
 
@@ -125,7 +125,7 @@ class TaskTest extends TestCase
     }
 
     /** @test */
-    public function user_cannot_update_other_users_task(): void
+    public function test_user_cannot_update_other_users_task(): void
     {
         $user = User::factory()->create();
         $otherTask = Task::factory()->create();
@@ -139,7 +139,7 @@ class TaskTest extends TestCase
     }
 
     /** @test */
-    public function user_can_delete_their_task(): void
+    public function test_user_can_delete_their_task(): void
     {
         $user = User::factory()->create();
 
@@ -158,7 +158,7 @@ class TaskTest extends TestCase
     }
 
     /** @test */
-    public function user_cannot_delete_other_users_task(): void
+    public function test_user_cannot_delete_other_users_task(): void
     {
         $user = User::factory()->create();
         $otherTask = Task::factory()->create();

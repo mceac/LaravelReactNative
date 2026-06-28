@@ -20,6 +20,13 @@ class TaskService
         ]);
     }
 
+    public function update(Task $task, array $data): Task
+    {
+        $task->update($data);
+
+        return $task->fresh();
+    }
+
     public function delete(Task $task)
     {
         return $task->delete();

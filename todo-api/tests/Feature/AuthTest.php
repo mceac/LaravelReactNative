@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Laravel\Sanctum\Sanctum;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -11,7 +12,7 @@ class AuthTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function user_can_register(): void
+    public function test_user_can_register(): void
     {
         $response = $this->postJson('/api/register', [
             'name' => 'Test User',
@@ -36,7 +37,7 @@ class AuthTest extends TestCase
     }
 
     /** @test */
-    public function user_can_login(): void
+    public function test_user_can_login(): void
     {
         $user = User::factory()->create([
             'password' => bcrypt('password123')
@@ -60,13 +61,12 @@ class AuthTest extends TestCase
     }
 
     /** @test */
-    public function authenticated_user_can_get_profile(): void
+    public function test_authenticated_user_can_get_profile(): void
     {
         $user = User::factory()->create();
+        Sanctum::actingAs($user);
 
-        $response = $this->actingAs($user, 'sanctum')
-            ->getJson('/api/me');
-
+        $response = $this->getJson('/api/me');
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'status',
@@ -80,13 +80,12 @@ class AuthTest extends TestCase
     }
 
     /** @test */
-    public function user_can_logout(): void
+    public function test_user_can_logout(): void
     {
         $user = User::factory()->create();
+        Sanctum::actingAs($user);
 
-        $response = $this->actingAs($user, 'sanctum')
-            ->postJson('/api/logout');
-
+        $response = $this->postJson('/api/logout');
         $response->assertStatus(200)
             ->assertJson([
                 'status' => 'success',
@@ -95,7 +94,7 @@ class AuthTest extends TestCase
     }
 
     /** @test */
-    public function login_fails_with_wrong_credentials(): void
+    public function test_login_fails_with_wrong_credentials(): void
     {
         $user = User::factory()->create([
             'password' => bcrypt('correct-password')

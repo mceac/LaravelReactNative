@@ -53,13 +53,10 @@ class TaskController extends Controller
     {
         $this->authorize('update', $task);
 
-        $updatedTask = $this->taskService->update(
-            $task,
-            $request->validated()
-        );
+        $task = $this->taskService->update($task, $request->validated());
 
         return $this->success(
-            new TaskResource($updatedTask),
+            new TaskResource($task),
             'Task updated successfully'
         );
     }

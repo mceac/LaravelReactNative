@@ -4,33 +4,9 @@ namespace App\Services;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
-use App\Traits\ApiResponse;
 
 class AuthService
 {
-    public function login(array $credentials): array
-    {
-        $user = User::where('email', $credentials['email'])->first();
-
-        if (! $user || ! Hash::check($credentials['password'], $user->password)) {
-            throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
-            ]);
-        }
-
-        // revoke previous tokens (opcional pero recomendado)
-        $user->tokens()->delete();
-
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return [
-            'user' => $user,
-            'token' => $token,
-            'token_type' => 'Bearer',
-        ];
-    }
-
     public function register(array $data): array
     {
         $user = User::create([
@@ -39,7 +15,24 @@ class AuthService
             'password' => bcrypt($data['password']),
         ]);
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $token = $user->createToken('auth-token')->plainTextToken;
+
+        return [
+            'user' => $user,
+            'token' => $token,
+            'token_type' => 'Bearer',
+        ];
+    }
+
+    public function login(array $data): array
+    {
+        $user = User::where('email', $data['email'])->first();
+
+        if (! $user || ! Hash::check($data['password'], $user->password)) {
+            abort(422, 'Invalid credentials');
+        }
+
+        $token = $user->createToken('auth-token')->plainTextToken;
 
         return [
             'user' => $user,
@@ -50,6 +43,7 @@ class AuthService
 
     public function logout(User $user): void
     {
-        $user->currentAccessToken()->delete();
+        //evita el crash de null token
+        $user->currentAccessToken()?->delete();
     }
 }
