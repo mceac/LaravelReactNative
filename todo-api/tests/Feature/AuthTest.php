@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use Laravel\Sanctum\Sanctum;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class AuthTest extends TestCase
@@ -28,7 +28,7 @@ class AuthTest extends TestCase
                     'user',
                     'token',
                     'token_type',
-                ]
+                ],
             ]);
 
         $this->assertDatabaseHas('users', [
@@ -40,7 +40,7 @@ class AuthTest extends TestCase
     public function test_user_can_login(): void
     {
         $user = User::factory()->create([
-            'password' => bcrypt('password123')
+            'password' => bcrypt('password123'),
         ]);
 
         $response = $this->postJson('/api/login', [
@@ -56,7 +56,7 @@ class AuthTest extends TestCase
                     'user',
                     'token',
                     'token_type',
-                ]
+                ],
             ]);
     }
 
@@ -75,7 +75,7 @@ class AuthTest extends TestCase
                     'id',
                     'name',
                     'email',
-                ]
+                ],
             ]);
     }
 
@@ -89,7 +89,7 @@ class AuthTest extends TestCase
         $response->assertStatus(200)
             ->assertJson([
                 'status' => 'success',
-                'message' => 'Logged out successfully'
+                'message' => 'Logged out successfully',
             ]);
     }
 
@@ -97,7 +97,7 @@ class AuthTest extends TestCase
     public function test_login_fails_with_wrong_credentials(): void
     {
         $user = User::factory()->create([
-            'password' => bcrypt('correct-password')
+            'password' => bcrypt('correct-password'),
         ]);
 
         $response = $this->postJson('/api/login', [

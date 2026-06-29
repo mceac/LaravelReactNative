@@ -19,4 +19,4 @@ use OpenApi\Attributes as OA;
     scheme: 'bearer',
     bearerFormat: 'Token'
 )]
-class OpenApi{}
+class OpenApi {}

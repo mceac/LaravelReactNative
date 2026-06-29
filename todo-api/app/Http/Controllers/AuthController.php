@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Resources\UserResource;
 use App\Services\AuthService;
 use App\Traits\ApiResponse;
-use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
 
@@ -30,7 +30,7 @@ class AuthController extends Controller
             required: ['email', 'password'],
             properties: [
                 new OA\Property(property: 'email', type: 'string', format: 'email', example: 'john@example.com'),
-                new OA\Property(property: 'password', type: 'string', format: 'password', example: 'password')
+                new OA\Property(property: 'password', type: 'string', format: 'password', example: 'password'),
             ]
         )
     )]
@@ -62,11 +62,11 @@ class AuthController extends Controller
     #[OA\RequestBody(
         required: true,
         content: new OA\JsonContent(
-            required: ['name','email','password'],
+            required: ['name', 'email', 'password'],
             properties: [
                 new OA\Property(property: 'name', type: 'string', example: 'John Doe'),
                 new OA\Property(property: 'email', type: 'string', format: 'email', example: 'john@example.com'),
-                new OA\Property(property: 'password', type: 'string', format: 'password', example: 'password')
+                new OA\Property(property: 'password', type: 'string', format: 'password', example: 'password'),
             ]
         )
     )]

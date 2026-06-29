@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -31,7 +31,7 @@ class TaskTest extends TestCase
                     'title',
                     'description',
                     'created_at',
-                ]
+                ],
             ]);
 
         $this->assertDatabaseHas('tasks', [
@@ -58,7 +58,7 @@ class TaskTest extends TestCase
             ->assertJsonStructure([
                 'status',
                 'message',
-                'data'
+                'data',
             ]);
     }
 
@@ -82,7 +82,7 @@ class TaskTest extends TestCase
                     'id',
                     'title',
                     'description',
-                ]
+                ],
             ]);
     }
 

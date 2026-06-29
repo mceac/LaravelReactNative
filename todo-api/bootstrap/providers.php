@@ -5,5 +5,5 @@ use App\Providers\AuthServiceProvider;
 
 return [
     AppServiceProvider::class,
-    AuthServiceProvider::class
+    AuthServiceProvider::class,
 ];

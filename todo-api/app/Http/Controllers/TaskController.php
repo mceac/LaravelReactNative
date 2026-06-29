@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Task;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Resources\TaskResource;
+use App\Models\Task;
 use App\Services\TaskService;
 use App\Traits\ApiResponse;
 use OpenApi\Attributes as OA;
@@ -82,7 +82,7 @@ class TaskController extends Controller
             required: ['title'],
             properties: [
                 new OA\Property(property: 'title', type: 'string', example: 'Buy groceries'),
-                new OA\Property(property: 'description', type: 'string', example: 'Milk, Bread, Eggs')
+                new OA\Property(property: 'description', type: 'string', example: 'Milk, Bread, Eggs'),
             ]
         )
     )]
@@ -121,7 +121,7 @@ class TaskController extends Controller
         content: new OA\JsonContent(
             properties: [
                 new OA\Property(property: 'title', type: 'string'),
-                new OA\Property(property: 'description', type: 'string')
+                new OA\Property(property: 'description', type: 'string'),
             ]
         )
     )]

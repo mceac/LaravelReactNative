@@ -43,7 +43,7 @@ class AuthService
 
     public function logout(User $user): void
     {
-        //evita el crash de null token
+        // evita el crash de null token
         $user->currentAccessToken()?->delete();
     }
 }
