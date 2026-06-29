@@ -29,18 +29,25 @@ The backend follows a simple REST-oriented controller-based structure:
 app/
  ├── Http/
  │    ├── Controllers/
- │         ├── AuthController
- │         └── TaskController
+ |    ├── Requests/
+ |    └── Resources/
  ├── Models/
- └── Services (implicitly handled within controllers in this version)
+ ├── Policies/
+ ├── Services/
+ └── Providers/
 ```
 
 Key Features
 ```text
-RESTful API for authentication and task CRUD operations
-Token-based authentication using Laravel Sanctum
-Request validation handled at controller level
-Password hashing using bcrypt
+RESTful API
+Service Layer architecture
+Laravel API Resources
+Form Requests validation
+Laravel Policies
+Sanctum authentication
+Feature Tests
+Factories
+Database Refresh for testing
 ```
 
 📱 Frontend (React Native)
@@ -109,6 +116,28 @@ Token is persisted using AsyncStorage
 Axios interceptor automatically attaches the token to requests
 ```
 
+5. Authorization
+```text
+Laravel Policies enforce resource ownership.
+
+Users can:
+
+✔ View their own tasks
+✔ Update their own tasks
+✔ Delete their own tasks
+
+Users cannot access resources belonging to other users.
+```
+
+6. Testing
+```text
+PHPUnit Feature Tests
+Authentication
+Task CRUD
+Authorization
+Validation
+```
+
 🔐 Authentication Flow
 
 ```text
@@ -155,7 +184,22 @@ POST /api/tasks
 DELETE /api/tasks/{id}
 ```
 
-🧪 Project Status
+🧪 Testing
+```text
+Feature tests cover:
+
+Authentication
+Registration
+Login
+Logout
+Profile endpoint
+Task CRUD
+Authorization
+Database isolation using RefreshDatabase
+Factories for test data generation
+```
+
+✅ Project Status
 ```text
 ✔ Functional backend (Laravel API + Sanctum)
 ✔ Functional mobile app (Expo React Native)

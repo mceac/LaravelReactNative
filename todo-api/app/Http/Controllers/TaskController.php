@@ -7,6 +7,7 @@ use App\Http\Requests\StoreTaskRequest;
 use App\Http\Resources\TaskResource;
 use App\Services\TaskService;
 use App\Traits\ApiResponse;
+use OpenApi\Attributes as OA;
 
 class TaskController extends Controller
 {
@@ -16,6 +17,17 @@ class TaskController extends Controller
         private TaskService $taskService
     ) {}
 
+    #[OA\Get(
+        path: '/api/tasks',
+        operationId: 'listTasks',
+        summary: 'List user tasks',
+        security: [['sanctum' => []]],
+        tags: ['Tasks']
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Task list'
+    )]
     public function index()
     {
         $tasks = $this->taskService->getAllForUser(auth()->id());
@@ -26,6 +38,27 @@ class TaskController extends Controller
         );
     }
 
+    #[OA\Get(
+        path: '/api/tasks/{id}',
+        operationId: 'showTask',
+        summary: 'Show a task',
+        security: [['sanctum' => []]],
+        tags: ['Tasks']
+    )]
+    #[OA\Parameter(
+        name: 'id',
+        in: 'path',
+        required: true,
+        schema: new OA\Schema(type: 'integer')
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Task details'
+    )]
+    #[OA\Response(
+        response: 403,
+        description: 'Forbidden'
+    )]
     public function show(Task $task)
     {
         $this->authorize('view', $task);
@@ -36,6 +69,27 @@ class TaskController extends Controller
         );
     }
 
+    #[OA\Post(
+        path: '/api/tasks',
+        operationId: 'createTask',
+        summary: 'Create task',
+        security: [['sanctum' => []]],
+        tags: ['Tasks']
+    )]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ['title'],
+            properties: [
+                new OA\Property(property: 'title', type: 'string', example: 'Buy groceries'),
+                new OA\Property(property: 'description', type: 'string', example: 'Milk, Bread, Eggs')
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 201,
+        description: 'Task created'
+    )]
     public function store(StoreTaskRequest $request)
     {
         $task = $this->taskService->create(
@@ -49,6 +103,32 @@ class TaskController extends Controller
         );
     }
 
+    #[OA\Put(
+        path: '/api/tasks/{id}',
+        operationId: 'updateTask',
+        summary: 'Update task',
+        security: [['sanctum' => []]],
+        tags: ['Tasks']
+    )]
+    #[OA\Parameter(
+        name: 'id',
+        in: 'path',
+        required: true,
+        schema: new OA\Schema(type: 'integer')
+    )]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'title', type: 'string'),
+                new OA\Property(property: 'description', type: 'string')
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Task updated'
+    )]
     public function update(StoreTaskRequest $request, Task $task)
     {
         $this->authorize('update', $task);
@@ -61,6 +141,23 @@ class TaskController extends Controller
         );
     }
 
+    #[OA\Delete(
+        path: '/api/tasks/{id}',
+        operationId: 'deleteTask',
+        summary: 'Delete task',
+        security: [['sanctum' => []]],
+        tags: ['Tasks']
+    )]
+    #[OA\Parameter(
+        name: 'id',
+        in: 'path',
+        required: true,
+        schema: new OA\Schema(type: 'integer')
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Task deleted'
+    )]
     public function destroy(Task $task)
     {
         $this->authorize('delete', $task);
