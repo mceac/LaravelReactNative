@@ -4,11 +4,25 @@ on:
   push:
     branches: [main, develop]
   pull_request:
-    branches: [main, develop]
+    branches: [main]
 
 jobs:
   tests:
     runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: testing
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     steps:
       - uses: actions/checkout@v4
@@ -16,24 +30,24 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: "8.4"
-          extensions: mbstring, pdo_sqlite, bcmath, intl, zip
+          php-version: 8.4
+          extensions: mbstring, intl, pdo_mysql
+          coverage: none
 
-      - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-progress --no-interaction
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist
 
-      - name: Prepare environment
-        run: |
-          cp .env.example .env
-          php artisan key:generate
+      - name: Copy env
+        run: cp .env.example .env
 
-      - name: Create SQLite database
-        run: |
-          mkdir -p database
-          touch database/database.sqlite
+      - name: Generate key
+        run: php artisan key:generate
 
-      - name: Run Tests
-        env:
-          DB_CONNECTION: sqlite
-          DB_DATABASE: database/database.sqlite
+      - name: Run migrations
+        run: php artisan migrate --force
+
+      - name: Run tests
         run: php artisan test
+
+      - name: Run Pint (check only)
+        run: ./vendor/bin/pint --test
