@@ -4,7 +4,7 @@ import { useTasks } from "../src/hooks/useTasks";
 import { useCreateTask } from "../src/hooks/useCreateTask";
 import { useDeleteTask } from "../src/hooks/useDeleteTask";
 
-import TaskCard from "../src/components/TaskCard";
+import { TaskCard } from "../src/components/TaskCard";
 import TaskInput from "../src/components/TaskInput";
 import EmptyComponent from "../src/components/EmptyComponent";
 
@@ -26,50 +26,51 @@ export default function Tasks() {
         deleteTaskMutation.mutate(id);
     };
 
-    if (isLoading) {
-        return (
-            <View style={{ flex: 1, justifyContent: "center" }}>
-                <ActivityIndicator size="large" />
-            </View>
-        );
-    }
-
     return (
         <View style={{ flex: 1, padding: 20 }}>
-
-            <Text
-                style={{
-                    fontSize: 22,
-                    marginBottom: 15,
-                    fontWeight: "600",
-                }}
-            >
-                Tasks
+            <Text style={{ fontSize: 22, marginBottom: 15, fontWeight: "600" }}>
+            Tasks
             </Text>
 
             <TaskInput
-                creating={createTaskMutation.isPending}
-                onCreate={createTask}
+            creating={createTaskMutation.isPending}
+            onCreate={createTask}
             />
 
+            {isLoading ? (
+            <View>
+                {Array.from({ length: 6 }).map((_, i) => (
+                <View
+                    key={i}
+                    style={{
+                    height: 60,
+                    marginVertical: 6,
+                    borderRadius: 10,
+                    backgroundColor: "#e5e7eb",
+                    }}
+                />
+                ))}
+            </View>
+            ) : (
             <FlatList
                 data={tasks}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
-                    <TaskCard
-                        task={item}
-                        onDelete={deleteTask}
-                        deleting={deleteTaskMutation.isPending}
-                    />
+                <TaskCard
+                    task={item}
+                    onDelete={deleteTask}
+                    deleting={deleteTaskMutation.isPending}
+                />
                 )}
                 ListEmptyComponent={
-                    <EmptyComponent
-                        title="No hay tareas"
-                        description="Agrega tu primera tarea para comenzar."
-                    />
+                <EmptyComponent
+                    title="No hay tareas"
+                    description="Agrega tu primera tarea para comenzar."
+                />
                 }
             />
-
+            )}
         </View>
     );
 }
+
